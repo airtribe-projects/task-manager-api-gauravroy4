@@ -113,7 +113,6 @@ function deleteTask(id) {
 
 // Export the functions
 module.exports = {
-    acceptablePriority,
     getAllTasks,
     getTaskById,
     getTasksByPriority,
