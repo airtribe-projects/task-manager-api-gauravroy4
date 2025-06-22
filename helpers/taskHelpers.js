@@ -7,6 +7,9 @@ function getAllTasks(req) {
     let result = tasks;
     try {
         if (req.query && req.query.completed) {
+            if (req.query.completed.toLowerCase() !== 'true' && req.query.completed.toLowerCase() !== 'false') {
+                throw new Error("Invalid value for 'completed' query parameter. It must be 'true' or 'false'.");
+            }
             const completed = req.query.completed.toLowerCase() === 'true';
             result = tasks.filter(task => task.completed === completed);
         }
@@ -85,19 +88,23 @@ function updateTask(id, requestBody) {
 
     const { title, description, completed, priority } = requestBody;
 
-    if (!title || !description || (completed === undefined || typeof completed !== 'boolean')) {
+    // Validate types if fields are provided
+    if (
+        (completed !== undefined && typeof completed !== 'boolean') ||
+        (priority !== undefined && !acceptablePriority.includes(priority.toLowerCase()))
+    ) {
         return {
             error: true,
             invalidData: true,
-            message: "Invalid request body. Required fields title, description, and completed status. Completed must be a boolean. Priority Optional."
-        }
+            message: "Invalid request body. 'completed' must be a either true or false. 'priority' must be one of: low, medium, high."
+        };
     }
 
     task.lastUpdated = new Date(); // Update last updated date
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
     if (completed !== undefined) task.completed = completed;
-    if (priority !== undefined) task.priority = priority;
+    if (priority !== undefined) task.priority = acceptablePriority.includes(level.toLowerCase()) ? priority : 'low'; // Default to 'low' if not provided or invalid
 
     return task;
 }

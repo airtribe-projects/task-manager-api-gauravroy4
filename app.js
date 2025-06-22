@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 app.get('/tasks', (req, res) => {
     let result = taskHelper.getAllTasks(req);
     if (!result || result.error) {
-        res.status(500); // 500 Internal Server Error
+        res.status(500);
         res.json(result);
         return;
     }
@@ -27,7 +27,7 @@ app.get('/tasks', (req, res) => {
         return;
     }
 
-    res.status(200); // 200 OK
+    res.status(200);
     res.json(result);
 });
 
@@ -36,10 +36,10 @@ app.get('/tasks/:id', (req, res) => {
     const task = taskHelper.getTaskById(req.params.id);
     if (!task) {
         res.status(404);
-        res.json({ error: 'Task not found' });
+        res.json({ error: 'Task not found. Please provide a valid task id.' });
         return;
     }
-    res.status(200); // 200 OK
+    res.status(200);
     res.json(task);
 });
 
@@ -64,7 +64,7 @@ app.post('/tasks', (req, res) => {
         res.json(result);
         return;
     }
-    res.status(201); // 201 Created
+    res.status(201);
     res.json(result); // Return the created task
 });
 
